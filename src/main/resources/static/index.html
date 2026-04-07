@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Cook AI</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --bg-color: #0a0a1a;
+            --primary-accent: #00f2ea;
+            --secondary-accent: #ff4d4d;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-color: #f0f0f0;
+            --text-secondary: #a0a0b0;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .background-animation span {
+            position: absolute;
+            display: block;
+            list-style: none;
+            animation: float-up 30s linear infinite;
+            bottom: -200px;
+            font-size: 2.5rem;
+            opacity: 0;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10%, 90% {
+                opacity: 0.25;
+            }
+            100% {
+                transform: translateY(-120vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 0;
+            z-index: 100;
+            background: rgba(10, 10, 26, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-bg);
+            transition: top 0.3s ease-in-out;
+        }
+
+        nav {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary-accent);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-accent);
+        }
+
+        .cta-button {
+            background: var(--primary-accent);
+            color: var(--bg-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s ease, color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cta-button:hover {
+            background: var(--secondary-accent);
+            color: var(--text-color);
+        }
+
+        .cta-button img {
+            width: 18px;
+            height: 18px;
+        }
+
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 6rem 1rem 2rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content h1 .highlight {
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        section {
+            padding: 6rem 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 40px rgba(0, 242, 234, 0.2);
+        }
+
+        .feature-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-accent);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .how-it-works-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            text-align: center;
+            gap: 2rem;
+        }
+
+        .step {
+            max-width: 300px;
+        }
+
+        .step .step-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+            line-height: 1;
+        }
+
+        .step h3 {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .step p {
+            color: var(--text-secondary);
+        }
+
+        footer {
+            background-color: #050510;
+            padding: 2rem 0;
+            text-align: center;
+            border-top: 1px solid var(--card-bg);
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 767.98px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: flex-start;
+                gap: 1rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.6rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+
+            .cta-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="background-animation"></div>
+
+<header>
+    <nav class="container">
+        <a href="#hero" class="logo">h7 Cook<span>AI</span></a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+        </div>
+        <a href="#" id="login-btn-nav" class="cta-button">Get Started</a>
+    </nav>
+</header>
+
+<main>
+    <section id="hero">
+        <div class="hero-content container">
+            <h1>The Future of Cooking is <span class="highlight">Here.</span></h1>
+            <p>Don't just cook. Create. Turn your random ingredients into delightful meals with the power of artificial intelligence.</p>
+            <a href="#" id="login-btn-hero" class="cta-button">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google logo">
+                <span>Start Creating for Free</span>
+            </a>
+        </div>
+    </section>
+
+    <section id="features" class="container">
+        <div class="section-title animate-on-scroll">
+            <h2>Why You'll Love Cook AI</h2>
+            <p>We've built the ultimate kitchen assistant, designed to inspire creativity and reduce waste.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card animate-on-scroll">
+                <div class="icon">🤖</div>
+                <h3>AI-Powered Recipes</h3>
+                <p>Our advanced h7 AI understands ingredients and flavors to generate unique, delicious recipes you won't find anywhere else.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="icon">🌿</div>
+                <h3>Reduce Food Waste</h3>
+                <p>Use what you have. Simply enter your ingredients and let our AI build a recipe around them, saving you money and helping the planet.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="icon">🌍</div>
+                <h3>Explore Cuisines</h3>
+                <p>Feeling adventurous? Tell our AI you want to try something new, from Italian classics to spicy Thai dishes, and get inspired.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="container">
+        <div class="section-title animate-on-scroll">
+            <h2>Simple as 1-2-3</h2>
+            <p>Getting a masterpiece on your plate has never been easier.</p>
+        </div>
+        <div class="how-it-works-steps">
+            <div class="step animate-on-scroll">
+                <div class="step-number">01</div>
+                <h3>Enter Ingredients</h3>
+                <p>List everything you have in your fridge and pantry. The more, the better!</p>
+            </div>
+            <div class="step animate-on-scroll">
+                <div class="step-number">02</div>
+                <h3>Generate Recipe</h3>
+                <p>Click the button and watch as our AI instantly crafts a custom recipe just for you.</p>
+            </div>
+            <div class="step animate-on-scroll">
+                <div class="step-number">03</div>
+                <h3>Cook & Enjoy</h3>
+                <p>Follow the simple, step-by-step instructions and enjoy your delicious, AI-generated meal.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 h7 (synapse AI). All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const bgAnimationContainer = document.querySelector('.background-animation');
+        if (bgAnimationContainer) {
+            const icons = ['🥕', '🍅', '🥦', '🌶️', '🧅', '🍄', '🧀', '🍗', '🥬', '🫑', '🥑', '🍋', '🥩', '🥔'];
+            const numberOfIcons = 30;
+
+            for (let i = 0; i < numberOfIcons; i++) {
+                let icon = document.createElement('span');
+                icon.innerText = icons[Math.floor(Math.random() * icons.length)];
+                icon.style.left = `${Math.random() * 100}vw`;
+                icon.style.animationDuration = `${Math.random() * 20 + 20}s`;
+                icon.style.animationDelay = `${Math.random() * 20}s`;
+                icon.style.fontSize = `${Math.random() * 2 + 1.5}rem`;
+                icon.style.filter = `blur(${Math.random() * 2}px)`;
+                bgAnimationContainer.appendChild(icon);
+            }
+        }
+
+        const animatedElements = document.querySelectorAll('.animate-on-scroll');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        animatedElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        const loginBtnNav = document.getElementById('login-btn-nav');
+        const loginBtnHero = document.getElementById('login-btn-hero');
+
+        const handleLoginClick = function(event) {
+            event.preventDefault();
+            window.location.href = '/oauth2/authorization/google';
+        };
+
+        if (loginBtnNav) {
+            loginBtnNav.addEventListener('click', handleLoginClick);
+        }
+
+        if (loginBtnHero) {
+            loginBtnHero.addEventListener('click', handleLoginClick);
+        }
+
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+    });
+</script>
+</body>
+</html>

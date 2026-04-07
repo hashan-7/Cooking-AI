@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cook AI - Application</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --bg-color: #0a0a1a;
+            --primary-accent: #00f2ea;
+            --secondary-accent: #ff4d4d;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --text-color: #f0f0f0;
+            --text-secondary: #a0a0b0;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .background-animation span {
+            position: absolute;
+            display: block;
+            list-style: none;
+            animation: float-up 30s linear infinite;
+            bottom: -200px;
+            font-size: 2.5rem;
+            opacity: 0;
+        }
+
+        @keyframes float-up {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10%, 90% { opacity: 0.15; }
+            100% { transform: translateY(-120vh) rotate(720deg); opacity: 0; }
+        }
+
+        header {
+            padding: 1.5rem 0;
+            background: rgba(10, 10, 26, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            min-width: 0;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: var(--primary-accent);
+        }
+
+        .h7-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.4rem 0.85rem;
+            border-radius: 999px;
+            background: linear-gradient(90deg, rgba(0, 242, 234, 0.16), rgba(255, 77, 77, 0.16));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-color);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 242, 234, 0.08);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 0;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-accent);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .user-profile .user-name {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .logout-btn {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-left: 1rem;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .logout-btn:hover {
+            color: var(--secondary-accent);
+        }
+
+        .app-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 0 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background: var(--primary-accent);
+            color: var(--bg-color);
+            border-color: var(--primary-accent);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            color: var(--text-color);
+            font-weight: 600;
+            border-color: transparent;
+        }
+
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        .app-main {
+            width: 90%;
+            max-width: 1400px;
+            margin: 2rem auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 992px) {
+            .app-main {
+                grid-template-columns: 1fr 1.5fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            animation: fadeInUp 1s ease-out;
+            width: 100%;
+        }
+
+        .input-container h2, .output-container h2, .saved-recipes-container h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        textarea#ingredient-input {
+            width: 100%;
+            background-color: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--text-color);
+            font-family: var(--font-family);
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        textarea#ingredient-input:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 15px rgba(0, 242, 234, 0.2);
+        }
+
+        #suggestions-box {
+            position: absolute;
+            width: 100%;
+            background: #1c1c2e;
+            border: 1px solid var(--card-bg);
+            border-radius: 10px;
+            margin-top: -0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .suggestion-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .suggestion-item:hover {
+            background-color: rgba(0, 242, 234, 0.1);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .custom-select {
+            width: 100%;
+            background-color: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            color: var(--text-color);
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300F2EA%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E');
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 0.65em auto;
+        }
+
+        .custom-select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .generate-btn {
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            color: var(--text-color);
+            border: none;
+            padding: 1rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+            min-height: 50px;
+        }
+
+        .surprise-btn {
+            background: transparent;
+            color: var(--primary-accent);
+            border: 2px solid var(--primary-accent);
+            padding: 1rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            min-height: 50px;
+        }
+
+        .generate-btn:hover:not(:disabled), .surprise-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .surprise-btn:hover:not(:disabled) {
+            background: var(--primary-accent);
+            color: var(--bg-color);
+        }
+
+        .generate-btn:disabled, .surprise-btn:disabled {
+            cursor: not-allowed;
+            background: #555;
+            border-color: #555;
+            color: #999;
+        }
+
+        .info-icon {
+            color: var(--primary-accent);
+            border: 1px solid var(--primary-accent);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            cursor: help;
+            margin-left: -0.5rem;
+            flex-shrink: 0;
+        }
+
+        .loader-button {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: var(--text-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .save-recipe-btn {
+            background: var(--input-bg);
+            color: var(--primary-accent);
+            border: 1px solid var(--primary-accent);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .save-recipe-btn:hover:not(:disabled) {
+            background: var(--primary-accent);
+            color: var(--bg-color);
+        }
+
+        .save-recipe-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        #recipe-output {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.8;
+            font-weight: 300;
+            height: 350px;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        #recipe-output::-webkit-scrollbar { width: 6px; }
+        #recipe-output::-webkit-scrollbar-track { background: var(--input-bg); border-radius: 10px; }
+        #recipe-output::-webkit-scrollbar-thumb { background-image: linear-gradient(var(--primary-accent), var(--secondary-accent)); border-radius: 10px; }
+
+        .loader-container { display: flex; justify-content: center; align-items: center; height: 100%; flex-direction: column; gap: 1rem; }
+        .pulsing-loader { width: 60px; height: 60px; border-radius: 50%; background: var(--primary-accent); animation: pulse 1.5s infinite cubic-bezier(0.66, 0, 0, 1); box-shadow: 0 0 0 0 rgba(0, 242, 234, 0.5); }
+        @keyframes pulse { to { box-shadow: 0 0 0 30px rgba(0, 242, 234, 0); } }
+
+        .saved-recipes-container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        #saved-recipes-list {
+            list-style: none;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        #saved-recipes-list::-webkit-scrollbar { width: 6px; }
+        #saved-recipes-list::-webkit-scrollbar-track { background: var(--input-bg); border-radius: 10px; }
+        #saved-recipes-list::-webkit-scrollbar-thumb { background-image: linear-gradient(var(--primary-accent), var(--secondary-accent)); border-radius: 10px; }
+
+        .saved-recipe-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--card-bg);
+            transition: background-color 0.3s ease;
+            background: var(--card-bg);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+
+        .saved-recipe-item:hover {
+            background-color: var(--input-bg);
+        }
+
+        .saved-recipe-item-info {
+            cursor: pointer;
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .saved-recipe-item .title {
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .saved-recipe-item .date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .delete-recipe-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin-left: 1rem;
+            transition: color 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .delete-recipe-btn:hover {
+            color: var(--secondary-accent);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            gap: 1rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            word-break: break-word;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .modal-body {
+            text-align: left;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .modal-body::-webkit-scrollbar { width: 6px; }
+        .modal-body::-webkit-scrollbar-track { background: var(--input-bg); border-radius: 10px; }
+        .modal-body::-webkit-scrollbar-thumb { background-image: linear-gradient(var(--primary-accent), var(--secondary-accent)); border-radius: 10px; }
+
+        .modal-content p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border-radius: 25px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .modal-btn-confirm {
+            background: var(--secondary-accent);
+            color: var(--text-color);
+        }
+
+        .modal-btn-confirm:hover {
+            background: #d93a3a;
+        }
+
+        .modal-btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            border: 1px solid var(--text-secondary);
+        }
+
+        .modal-btn-cancel:hover {
+            background: var(--text-secondary);
+            color: var(--bg-color);
+        }
+
+
+        @media (max-width: 991.98px) {
+            .app-main {
+                width: 94%;
+            }
+
+            .saved-recipes-container {
+                width: 94%;
+            }
+
+            footer.app-footer {
+                width: 94%;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            header {
+                padding: 1rem 0;
+            }
+
+            nav {
+                width: calc(100% - 24px);
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .brand-wrap {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .user-profile {
+                width: 100%;
+                justify-content: space-between;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+            }
+
+            .user-profile .user-name {
+                font-size: 0.95rem;
+            }
+
+            .logout-btn {
+                margin-left: 0;
+            }
+
+            .app-navigation {
+                margin: 1.25rem 0;
+                gap: 0.75rem;
+            }
+
+            .nav-tab {
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .card {
+                padding: 1.5rem 1rem;
+                border-radius: 18px;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .generate-btn,
+            .surprise-btn {
+                width: 100%;
+            }
+
+            .info-icon {
+                margin-left: 0;
+                align-self: center;
+            }
+
+            .output-header {
+                align-items: stretch;
+            }
+
+            .save-recipe-btn {
+                width: 100%;
+            }
+
+            .saved-recipe-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .delete-recipe-btn {
+                margin-left: 0;
+                align-self: flex-end;
+            }
+
+            .modal-content {
+                width: 100%;
+                padding: 1.5rem 1rem;
+                border-radius: 20px;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+
+            footer.app-footer {
+                width: calc(100% - 24px);
+                margin-top: 2rem;
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .h7-tag {
+                font-size: 0.75rem;
+                padding: 0.35rem 0.7rem;
+            }
+
+            .input-container h2,
+            .output-container h2,
+            .saved-recipes-container h2 {
+                font-size: 1.45rem;
+                margin-bottom: 1.25rem;
+            }
+
+            #recipe-output {
+                height: 300px;
+                padding-right: 8px;
+            }
+
+            .modal-header h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="background-animation"></div>
+
+<header>
+    <nav>
+        <div class="brand-wrap">
+            <a href="#" class="logo">h7 Cook<span>AI</span></a>
+        </div>
+        <div class="user-profile">
+            <span id="user-name" class="user-name">Welcome</span>
+            <img id="user-avatar" src="https://i.pravatar.cc/150" alt="User Avatar">
+            <a id="logout-link" href="#" class="logout-btn">Logout</a>
+        </div>
+    </nav>
+</header>
+
+<div class="app-navigation">
+    <button class="nav-tab active" data-page="generator">Create Recipe</button>
+    <button class="nav-tab" data-page="library">My Library</button>
+</div>
+
+<div id="page-generator" class="page-content active">
+    <main class="app-main">
+        <div class="card input-container">
+            <h2>Craft Your Meal</h2>
+            <div class="form-group">
+                <label for="ingredient-input">List your available ingredients, separated by commas.</label>
+                <textarea id="ingredient-input" rows="6" placeholder="e.g., chicken breast, rice, broccoli, soy sauce, garlic"></textarea>
+                <div id="suggestions-box"></div>
+            </div>
+
+            <div class="filters-grid">
+                <div class="form-group">
+                    <label for="cuisine-filter">Cuisine</label>
+                    <select id="cuisine-filter" class="custom-select">
+                        <option value="">Any</option>
+                        <option value="Italian">Italian</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Mexican">Mexican</option>
+                        <option value="Indian">Indian</option>
+                        <option value="Sri Lankan">Sri Lankan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="diet-filter">Dietary Needs</label>
+                    <select id="diet-filter" class="custom-select">
+                        <option value="">None</option>
+                        <option value="Vegetarian">Vegetarian</option>
+                        <option value="Vegan">Vegan</option>
+                        <option value="Gluten-Free">Gluten-Free</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="time-filter">Max Cook Time</label>
+                    <select id="time-filter" class="custom-select">
+                        <option value="">Any</option>
+                        <option value="under 15 minutes">Under 15 mins</option>
+                        <option value="under 30 minutes">Under 30 mins</option>
+                        <option value="under 1 hour">Under 1 hour</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="generate-btn" class="generate-btn">Generate Recipe</button>
+                <button id="surprise-btn" class="surprise-btn">✨ Surprise Me!</button>
+                <span class="info-icon" title="Don't know what to cook? Click here and our AI will pick random ingredients and create a recipe for you!">?</span>
+            </div>
+        </div>
+
+        <div class="card output-container">
+            <div class="output-header">
+                <h2>Your AI-Generated Recipe</h2>
+                <button id="save-recipe-btn" class="save-recipe-btn">Save Recipe</button>
+            </div>
+            <div id="recipe-output">
+                <p>Your culinary creation will appear here. Just enter your ingredients and click generate!</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div id="page-library" class="page-content">
+    <div class="saved-recipes-container card">
+        <h2>My Saved Recipes</h2>
+        <ul id="saved-recipes-list"></ul>
+    </div>
+</div>
+
+<div id="view-recipe-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="view-recipe-title">Recipe Title</h3>
+            <button class="modal-close-btn">&times;</button>
+        </div>
+        <div id="view-recipe-content" class="modal-body">
+            Recipe content will go here...
+        </div>
+    </div>
+</div>
+
+<div id="delete-recipe-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Confirm Deletion</h3>
+        <p>Are you sure you want to permanently delete this recipe? This action cannot be undone.</p>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel">Cancel</button>
+            <button class="modal-btn modal-btn-confirm">Delete</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let currentRecipeContent = null;
+        let currentRecipeTitle = null;
+        let recipeIdToDelete = null;
+
+        const userNameEl = document.getElementById('user-name');
+        const userAvatarEl = document.getElementById('user-avatar');
+        const generateButton = document.getElementById('generate-btn');
+        const surpriseButton = document.getElementById('surprise-btn');
+        const saveButton = document.getElementById('save-recipe-btn');
+        const recipeOutput = document.getElementById('recipe-output');
+        const ingredientInput = document.getElementById('ingredient-input');
+        const suggestionsBox = document.getElementById('suggestions-box');
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const pages = document.querySelectorAll('.page-content');
+        const savedRecipesList = document.getElementById('saved-recipes-list');
+        const cuisineFilter = document.getElementById('cuisine-filter');
+        const dietFilter = document.getElementById('diet-filter');
+        const timeFilter = document.getElementById('time-filter');
+        const logoutLink = document.getElementById('logout-link');
+        const viewRecipeModal = document.getElementById('view-recipe-modal');
+        const deleteRecipeModal = document.getElementById('delete-recipe-modal');
+
+        const controls = [generateButton, surpriseButton, ingredientInput, cuisineFilter, dietFilter, timeFilter];
+
+        function setControlsDisabled(isDisabled) {
+            controls.forEach(control => control.disabled = isDisabled);
+        }
+
+        function redirectToLogin() {
+            window.location.replace('/');
+        }
+
+        function checkAuthentication() {
+            fetch('/api/user/me', { cache: 'no-store' })
+                .then(response => {
+                    if (response.status === 401 || response.redirected) {
+                        redirectToLogin();
+                        return null;
+                    }
+                    if (!response.ok) {
+                        throw new Error('User not authenticated');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data) {
+                        userNameEl.textContent = `Welcome, ${data.name.split(' ')[0]}`;
+                        userAvatarEl.src = data.imageUrl;
+                    }
+                })
+                .catch(() => {
+                    redirectToLogin();
+                });
+        }
+
+        checkAuthentication();
+
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                checkAuthentication();
+            }
+        });
+
+        history.pushState(null, '', location.href);
+        window.addEventListener('popstate', function() {
+            checkAuthentication();
+            history.pushState(null, '', location.href);
+        });
+
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                navTabs.forEach(t => t.classList.remove('active'));
+                pages.forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(`page-${tab.dataset.page}`).classList.add('active');
+                if (tab.dataset.page === 'library') {
+                    loadSavedRecipes();
+                }
+            });
+        });
+
+        viewRecipeModal.querySelector('.modal-close-btn').addEventListener('click', () => {
+            viewRecipeModal.classList.remove('active');
+        });
+
+        deleteRecipeModal.querySelector('.modal-btn-cancel').addEventListener('click', () => {
+            recipeIdToDelete = null;
+            deleteRecipeModal.classList.remove('active');
+        });
+
+        logoutLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = '/logout';
+        });
+
+        let debounceTimer;
+
+        function debounce(func, delay) {
+            return function(...args) {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        ingredientInput.addEventListener('keyup', debounce((e) => {
+            const query = e.target.value.split(',').pop().trim();
+            if (query.length < 2) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            fetch(`/api/ingredients/search?query=${query}`)
+                .then(response => response.json())
+                .then(suggestions => {
+                    if (suggestions.length > 0) {
+                        suggestionsBox.innerHTML = suggestions.map(s => `<div class="suggestion-item">${s}</div>`).join('');
+                        suggestionsBox.style.display = 'block';
+                    } else {
+                        suggestionsBox.style.display = 'none';
+                    }
+                });
+        }, 300));
+
+        suggestionsBox.addEventListener('click', (e) => {
+            if (e.target.classList.contains('suggestion-item')) {
+                let currentIngredients = ingredientInput.value.split(',').map(item => item.trim()).filter(Boolean);
+                currentIngredients.pop();
+                currentIngredients.push(e.target.textContent);
+                ingredientInput.value = currentIngredients.join(', ') + ', ';
+                suggestionsBox.style.display = 'none';
+                ingredientInput.focus();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!suggestionsBox.contains(e.target) && e.target !== ingredientInput) {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+
+        function handleRecipeRequest(url, options = {}) {
+            setControlsDisabled(true);
+            generateButton.innerHTML = '<div class="loader-button"></div>';
+            surpriseButton.innerHTML = '<div class="loader-button"></div>';
+            saveButton.style.display = 'none';
+            recipeOutput.innerHTML = `<div class="loader-container"><div class="pulsing-loader"></div><p>Our AI Chef is crafting your recipe...</p></div>`;
+
+            fetch(url, options)
+                .then(response => {
+                    if (response.status === 401 || response.status === 403) {
+                        throw new Error('AUTH_REQUIRED');
+                    }
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    currentRecipeContent = data.recipeContent;
+                    currentRecipeTitle = data.title || 'Untitled Recipe';
+                    recipeOutput.textContent = data.recipeContent || 'No recipe content available.';
+                    saveButton.style.display = 'inline-block';
+                })
+                .catch(error => {
+                    if (error.message === 'AUTH_REQUIRED') {
+                        redirectToLogin();
+                        return;
+                    }
+                    recipeOutput.innerHTML = '<p style="color: #ff8a80;">Sorry, an error occurred. Please try again.</p>';
+                })
+                .finally(() => {
+                    setControlsDisabled(false);
+                    generateButton.innerHTML = 'Generate Recipe';
+                    surpriseButton.innerHTML = '✨ Surprise Me!';
+                });
+        }
+
+        generateButton.addEventListener('click', () => {
+            if (!ingredientInput.value.trim()) {
+                recipeOutput.innerHTML = '<p style="color: #ff8a80;">Please enter some ingredients first!</p>';
+                return;
+            }
+
+            const ingredientsArray = ingredientInput.value.split(',').map(item => item.trim()).filter(item => item);
+
+            const requestBody = {
+                ingredients: ingredientsArray,
+                cuisine: cuisineFilter.value,
+                diet: dietFilter.value,
+                cookTime: timeFilter.value
+            };
+
+            handleRecipeRequest('/api/recipes/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+        });
+
+        surpriseButton.addEventListener('click', () => {
+            handleRecipeRequest('/api/recipes/surprise');
+        });
+
+        saveButton.addEventListener('click', () => {
+            if (!currentRecipeContent || !currentRecipeTitle) return;
+
+            saveButton.disabled = true;
+            saveButton.textContent = 'Saving...';
+
+            fetch('/api/saved-recipes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: currentRecipeTitle, content: currentRecipeContent })
+            })
+                .then(response => {
+                    if (response.status === 401 || response.status === 403) {
+                        throw new Error('AUTH_REQUIRED');
+                    }
+                    if (!response.ok) {
+                        throw new Error('Failed to save recipe.');
+                    }
+                    saveButton.textContent = 'Saved!';
+                    setTimeout(() => {
+                        saveButton.textContent = 'Save Recipe';
+                    }, 2000);
+                })
+                .catch(error => {
+                    if (error.message === 'AUTH_REQUIRED') {
+                        redirectToLogin();
+                        return;
+                    }
+                    alert('Could not save the recipe.');
+                })
+                .finally(() => {
+                    saveButton.disabled = false;
+                });
+        });
+
+        function renderEmptyLibrary() {
+            savedRecipesList.innerHTML = '<p>You have no saved recipes yet.</p>';
+        }
+
+        function loadSavedRecipes() {
+            savedRecipesList.innerHTML = `<div class="loader-container"><div class="pulsing-loader"></div></div>`;
+
+            fetch('/api/saved-recipes')
+                .then(response => {
+                    if (response.status === 401 || response.status === 403) {
+                        throw new Error('AUTH_REQUIRED');
+                    }
+                    if (!response.ok) {
+                        throw new Error('Failed to load saved recipes.');
+                    }
+                    return response.json();
+                })
+                .then(recipes => {
+                    if (!recipes || recipes.length === 0) {
+                        renderEmptyLibrary();
+                        return;
+                    }
+
+                    savedRecipesList.innerHTML = recipes.map(recipe => {
+                        const date = new Date(recipe.savedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                        return `
+                            <li class="saved-recipe-item" data-id="${recipe.id}">
+                                <div class="saved-recipe-item-info">
+                                    <span class="title">${recipe.title}</span>
+                                    <div class="date">Saved on: ${date}</div>
+                                </div>
+                                <button class="delete-recipe-btn" data-id="${recipe.id}" aria-label="Delete recipe">&#x1F5D1;</button>
+                            </li>
+                        `;
+                    }).join('');
+                })
+                .catch(error => {
+                    if (error.message === 'AUTH_REQUIRED') {
+                        redirectToLogin();
+                        return;
+                    }
+                    savedRecipesList.innerHTML = '<p style="color: #ff8a80;">Could not load saved recipes.</p>';
+                });
+        }
+
+        savedRecipesList.addEventListener('click', (e) => {
+            const recipeItem = e.target.closest('.saved-recipe-item-info');
+            const deleteBtn = e.target.closest('.delete-recipe-btn');
+
+            if (recipeItem) {
+                const recipeId = recipeItem.parentElement.dataset.id;
+                fetch(`/api/saved-recipes/${recipeId}`)
+                    .then(res => {
+                        if (res.status === 401 || res.status === 403) {
+                            throw new Error('AUTH_REQUIRED');
+                        }
+                        if (!res.ok) {
+                            throw new Error('Failed to load recipe.');
+                        }
+                        return res.json();
+                    })
+                    .then(recipe => {
+                        document.getElementById('view-recipe-title').textContent = recipe.title;
+                        document.getElementById('view-recipe-content').textContent = recipe.content;
+                        viewRecipeModal.classList.add('active');
+                    })
+                    .catch(error => {
+                        if (error.message === 'AUTH_REQUIRED') {
+                            redirectToLogin();
+                            return;
+                        }
+                        alert('Could not open the saved recipe.');
+                    });
+            }
+
+            if (deleteBtn) {
+                recipeIdToDelete = deleteBtn.dataset.id;
+                deleteRecipeModal.classList.add('active');
+            }
+        });
+
+        deleteRecipeModal.querySelector('.modal-btn-confirm').addEventListener('click', () => {
+            if (!recipeIdToDelete) return;
+
+            fetch(`/api/saved-recipes/${recipeIdToDelete}`, { method: 'DELETE' })
+                .then(response => {
+                    if (response.status === 401 || response.status === 403) {
+                        throw new Error('AUTH_REQUIRED');
+                    }
+                    if (!response.ok) {
+                        throw new Error('Failed to delete recipe.');
+                    }
+
+                    const item = document.querySelector(`.saved-recipe-item[data-id='${recipeIdToDelete}']`);
+                    if (item) {
+                        item.remove();
+                    }
+
+                    if (!savedRecipesList.querySelector('.saved-recipe-item')) {
+                        renderEmptyLibrary();
+                    }
+
+                    recipeIdToDelete = null;
+                    deleteRecipeModal.classList.remove('active');
+                })
+                .catch(error => {
+                    recipeIdToDelete = null;
+                    deleteRecipeModal.classList.remove('active');
+
+                    if (error.message === 'AUTH_REQUIRED') {
+                        redirectToLogin();
+                        return;
+                    }
+
+                    alert('Failed to delete recipe.');
+                });
+        });
+    });
+</script>
+</body>
+</html>
