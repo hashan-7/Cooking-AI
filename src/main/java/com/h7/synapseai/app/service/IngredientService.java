@@ -34,15 +34,14 @@ public class IngredientService {
         String lowerCaseQuery = query.toLowerCase();
         return allIngredients.stream()
                 .filter(ingredient -> ingredient.toLowerCase().contains(lowerCaseQuery))
-                .limit(10) // We will return a maximum of 10 suggestions
+                .limit(10) 
                 .collect(Collectors.toList());
     }
 
     public List<String> getSurpriseIngredients() {
         List<String> shuffledIngredients = new ArrayList<>(allIngredients);
         Collections.shuffle(shuffledIngredients);
-        // Return a sublist of 3 to 5 random ingredients
-        int numberOfIngredients = 3 + (int)(Math.random() * 3); // Random number between 3 and 5
+        int numberOfIngredients = 3 + (int)(Math.random() * 3); 
         return shuffledIngredients.subList(0, numberOfIngredients);
     }
 }

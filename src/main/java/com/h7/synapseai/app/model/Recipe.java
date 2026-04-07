@@ -28,7 +28,6 @@ public class Recipe {
     public Recipe() {
     }
 
-    // Getters and Setters
 
     public Long getId() {
         return id;

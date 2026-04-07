@@ -5,11 +5,9 @@ import java.util.List;
 public class RecipeRequest {
 
     private List<String> ingredients;
-    private String cuisine; // e.g., "Italian", "Chinese"
-    private String diet; // e.g., "Vegetarian", "Vegan"
-    private String cookTime; // e.g., "Under 30 minutes"
-
-    // Getters and Setters
+    private String cuisine;
+    private String diet;
+    private String cookTime;
 
     public List<String> getIngredients() {
         return ingredients;
