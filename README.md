@@ -63,3 +63,8 @@ Make sure you have:
 ```bash
 git clone https://github.com/hashan-7/cook-ai.git
 cd cook-ai
+```
+
+<p align="center">
+  Made with ❤️ by h7
+</p>
