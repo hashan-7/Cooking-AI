@@ -1,5 +1,6 @@
 package com.h7.synapseai.app.controller;
 
+import com.h7.synapseai.app.dto.RecipeDetailDto;
 import com.h7.synapseai.app.dto.SaveRecipeRequest;
 import com.h7.synapseai.app.dto.SavedRecipeDto;
 import com.h7.synapseai.app.model.Recipe;
@@ -30,8 +31,8 @@ public class SavedRecipeController {
     }
 
     @PostMapping
-    public ResponseEntity<Recipe> saveRecipe(@RequestBody SaveRecipeRequest saveRecipeRequest,
-                                             @AuthenticationPrincipal OAuth2User oauth2User) {
+    public ResponseEntity<RecipeDetailDto> saveRecipe(@RequestBody SaveRecipeRequest saveRecipeRequest,
+                                                      @AuthenticationPrincipal OAuth2User oauth2User) {
         if (oauth2User == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -52,7 +53,14 @@ public class SavedRecipeController {
         recipe.setSavedAt(LocalDateTime.now());
 
         Recipe savedRecipe = recipeRepository.save(recipe);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
+
+        RecipeDetailDto response = new RecipeDetailDto(
+                savedRecipe.getId(),
+                savedRecipe.getTitle(),
+                savedRecipe.getContent()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
@@ -79,8 +87,8 @@ public class SavedRecipeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Recipe> getRecipeById(@PathVariable Long id,
-                                                @AuthenticationPrincipal OAuth2User oauth2User) {
+    public ResponseEntity<RecipeDetailDto> getRecipeById(@PathVariable Long id,
+                                                         @AuthenticationPrincipal OAuth2User oauth2User) {
         if (oauth2User == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -88,7 +96,13 @@ public class SavedRecipeController {
         String googleId = oauth2User.getAttribute("sub");
 
         return recipeRepository.findByIdAndUser_GoogleId(id, googleId)
-                .map(ResponseEntity::ok)
+                .map(recipe -> ResponseEntity.ok(
+                        new RecipeDetailDto(
+                                recipe.getId(),
+                                recipe.getTitle(),
+                                recipe.getContent()
+                        )
+                ))
                 .orElse(ResponseEntity.notFound().build());
     }
 
